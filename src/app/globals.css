@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@plugin "@tailwindcss/typography";
+
 
 @custom-variant dark (&:is(.dark *));
 
@@ -138,7 +140,8 @@
 }
 
 .markdown-preview {
-  @apply prose max-w-none prose-blue dark:prose-invert;
+  /* @apply prose max-w-none prose-blue dark:prose-invert; */
+  @apply max-w-none;
 }
 
 .markdown-preview pre {
