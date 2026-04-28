@@ -9,6 +9,7 @@ import {
   User as UserIcon,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import Link from "next/link";
 const Header: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -50,7 +51,7 @@ const Header: React.FC = () => {
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? "bg-[#0f1828]/90 backdrop-blur-xl border-b border-white/10" : "bg-transparent"}`}
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-10 flex items-center justify-between h-20">
-        <a
+        <Link
           href="#top"
           onClick={(e) => {
             e.preventDefault();
@@ -69,14 +70,14 @@ const Header: React.FC = () => {
               Systems Thinking
             </div>
           </div>
-        </a>
+        </Link>
 
         <nav className="hidden lg:flex items-center gap-9">
           {links.map((l) => (
             <button
               key={l.href}
               onClick={() => scrollTo(l.href)}
-              className="text-sm text-white/70 hover:text-white transition-colors font-medium tracking-wide"
+              className="text-sm text-white/70 hover:text-white transition-colors font-medium tracking-wide cursor-pointer"
             >
               {l.label}
             </button>
