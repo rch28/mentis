@@ -1,6 +1,10 @@
+import CaseStudies from "@/components/CaseStudies";
+import Comparison from "@/components/Comparison";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import ModelsLibrary from "@/components/ModelsLibrary";
+import Newsletter from "@/components/Newsletter";
+import Resources from "@/components/Resources";
 import StepGuides from "@/components/StepGuides";
 
 export default function Home() {
@@ -11,6 +15,10 @@ export default function Home() {
         <Hero />
         <ModelsLibrary />
         <StepGuides />
+         <CaseStudies />
+        <Comparison />
+        <Resources />
+        <Newsletter />
       </main>
     </div>
   );
