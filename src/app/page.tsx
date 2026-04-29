@@ -1,8 +1,11 @@
+import AuthModal from "@/components/AuthModal";
 import CaseStudies from "@/components/CaseStudies";
 import Comparison from "@/components/Comparison";
+import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import ModelsLibrary from "@/components/ModelsLibrary";
+import MyLibrary from "@/components/MyLibrary";
 import Newsletter from "@/components/Newsletter";
 import Resources from "@/components/Resources";
 import StepGuides from "@/components/StepGuides";
@@ -15,11 +18,14 @@ export default function Home() {
         <Hero />
         <ModelsLibrary />
         <StepGuides />
-         <CaseStudies />
+        <CaseStudies />
         <Comparison />
         <Resources />
         <Newsletter />
       </main>
+      <Footer />
+      <AuthModal />
+      <MyLibrary />
     </div>
   );
 }
