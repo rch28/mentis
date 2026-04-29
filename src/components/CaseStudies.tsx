@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import { ArrowRight, TrendingUp, TrendingDown, Bookmark } from "lucide-react";
 import { caseStudies } from "@/data/modelsData";
 import { useAuth } from "@/contexts/AuthContext";
+import { BookmarkButton } from "@/components/ui/bookmark-button";
+import { SectionHeader } from "@/components/ui/section-header";
 
 const CaseStudies: React.FC = () => {
   const [active, setActive] = useState(0);
@@ -30,22 +32,18 @@ const CaseStudies: React.FC = () => {
     >
       <div className="absolute bottom-0 left-0 w-125 h-125 bg-amber-400/5 rounded-full blur-3xl" />
       <div className="max-w-7xl mx-auto px-6 lg:px-10 relative">
-        <div className="flex items-end justify-between flex-wrap gap-6 mb-14">
-          <div className="max-w-2xl">
-            <div className="text-amber-400 text-xs font-semibold tracking-[0.3em] uppercase mb-4">
-              — Models in Action
-            </div>
-            <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl text-white leading-tight tracking-tight mb-5">
+        <SectionHeader
+          eyebrow="— Models in Action"
+          title={
+            <>
               Real Decisions.
               <br />
               Real Outcomes.
-            </h2>
-            <p className="text-white/60 text-lg leading-relaxed">
-              See how the world's most consequential thinkers applied these
-              models—and the cascading impact of their choices.
-            </p>
-          </div>
-        </div>
+            </>
+          }
+          description="See how consequential thinkers applied these models and the cascading impact of their choices."
+          className="mb-14"
+        />
 
         <div className="grid lg:grid-cols-12 gap-8">
           <div className="lg:col-span-4 space-y-2">
@@ -53,6 +51,7 @@ const CaseStudies: React.FC = () => {
               const cSaved = isBookmarked(c.id, "case");
               return (
                 <button
+                  type="button"
                   key={c.id}
                   onClick={() => setActive(i)}
                   className={`w-full text-left p-5 rounded-2xl border transition-all relative ${
@@ -91,19 +90,11 @@ const CaseStudies: React.FC = () => {
                     {study.industry}
                   </span>
                 </div>
-                <button
+                <BookmarkButton
                   onClick={handleSave}
-                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                    saved
-                      ? "bg-amber-400 text-[#0f1828]"
-                      : "bg-white/5 hover:bg-white/10 text-white/80 border border-white/10"
-                  }`}
-                >
-                  <Bookmark
-                    className={`w-4 h-4 ${saved ? "fill-current" : ""}`}
-                  />
-                  {saved ? "Saved" : "Save"}
-                </button>
+                  saved={saved}
+                  label="Save"
+                />
               </div>
 
               <h3 className="font-serif text-3xl lg:text-4xl text-white mb-8 leading-tight">
@@ -135,7 +126,7 @@ const CaseStudies: React.FC = () => {
                   The Outcome
                 </div>
                 <p className="text-amber-50 text-lg font-serif italic leading-relaxed">
-                  "{study.outcome}"
+                  &quot;{study.outcome}&quot;
                 </p>
               </div>
             </div>

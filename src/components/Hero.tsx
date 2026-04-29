@@ -24,16 +24,10 @@ const Hero: React.FC = () => {
           className="w-full h-full object-cover opacity-40"
           width={1000}
           height={1000}
+          priority
         />
         <div className="absolute inset-0 bg-linear-to-b from-[#0f1828] via-[#0f1828]/70 to-[#0f1828]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(79,70,229,0.25),transparent_50%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(245,158,11,0.12),transparent_50%)]" />
       </div>
-
-      {/* Floating decorative orbs */}
-      <div className="absolute top-1/4 left-10 w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
-      <div className="absolute top-1/3 right-20 w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse delay-300" />
-      <div className="absolute bottom-1/4 left-1/4 w-1 h-1 rounded-full bg-blue-300 animate-pulse delay-700" />
 
       <div className="relative max-w-7xl mx-auto px-6 lg:px-10 pt-32 pb-20 grid lg:grid-cols-12 gap-12 items-center">
         <div className="lg:col-span-7">
@@ -54,11 +48,12 @@ const Hero: React.FC = () => {
           <p className="text-lg md:text-xl text-white/70 max-w-2xl leading-relaxed mb-10 font-light">
             A curated library of 25+ mental models that transform how you
             decide, solve, and strategize. Step-by-step guides, real-world case
-            studies, and the frameworks the world's sharpest minds rely on.
+            studies, and the frameworks thoughtful operators rely on.
           </p>
 
           <div className="flex flex-wrap gap-4">
             <button
+              type="button"
               onClick={() => scrollTo("#library")}
               className="group inline-flex items-center gap-2 px-7 py-4 bg-amber-400 hover:bg-amber-300 text-[#0f1828] rounded-full font-semibold shadow-2xl shadow-amber-400/20 transition-all hover:scale-[1.02]"
             >
@@ -66,6 +61,7 @@ const Hero: React.FC = () => {
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </button>
             <button
+              type="button"
               onClick={() => scrollTo("#guides")}
               className="inline-flex items-center gap-2 px-7 py-4 bg-white/5 hover:bg-white/10 text-white border border-white/15 rounded-full font-semibold backdrop-blur-sm transition-all"
             >

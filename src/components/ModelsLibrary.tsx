@@ -7,10 +7,14 @@ import {
   Lightbulb,
   AlertTriangle,
   Filter,
-  Bookmark,
 } from "lucide-react";
 import { mentalModels, categories, MentalModel } from "@/data/modelsData";
 import { useAuth } from "@/contexts/AuthContext";
+import { BookmarkButton } from "@/components/ui/bookmark-button";
+import { FilterTabs } from "@/components/ui/filter-tabs";
+import { IconInput } from "@/components/ui/icon-input";
+import { ModalShell } from "@/components/ui/modal-shell";
+import { SectionHeader } from "@/components/ui/section-header";
 
 const categoryIcons: Record<string, React.ReactNode> = {
   decision: <BookOpen className="w-4 h-4" />,
@@ -67,53 +71,45 @@ const ModelsLibrary: React.FC = () => {
     >
       <div className="absolute top-0 right-0 w-125 h-125 bg-indigo-500/10 rounded-full blur-3xl" />
       <div className="max-w-7xl mx-auto px-6 lg:px-10 relative">
-        <div className="flex items-end justify-between flex-wrap gap-6 mb-12">
-          <div className="max-w-2xl">
-            <div className="text-amber-400 text-xs font-semibold tracking-[0.3em] uppercase mb-4">
-              — The Library
-            </div>
-            <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl text-white leading-tight tracking-tight mb-5">
+        <SectionHeader
+          eyebrow="— The Library"
+          title={
+            <>
               25+ Frameworks.
               <br />
               One Sharper Mind.
-            </h2>
-            <p className="text-white/60 text-lg leading-relaxed">
-              Filter by domain, search by name, click to dive deeper. Bookmark
-              any model to save it to your personal library.
-            </p>
-          </div>
-          <div className="text-white/40 text-sm">
-            Showing{" "}
-            <span className="text-white font-semibold">{filtered.length}</span>{" "}
-            of {mentalModels.length}
-          </div>
-        </div>
+            </>
+          }
+          description="Filter by domain, search by name, click to dive deeper. Bookmark any model to save it to your personal library."
+          aside={
+            <div className="text-white/40 text-sm">
+              Showing{" "}
+              <span className="text-white font-semibold">
+                {filtered.length}
+              </span>{" "}
+              of {mentalModels.length}
+            </div>
+          }
+        />
 
         <div className="flex flex-col lg:flex-row gap-4 mb-10">
-          <div className="relative flex-1">
-            <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
-            <input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search models, concepts, originators..."
-              className="w-full pl-12 pr-5 py-4 bg-white/5 border border-white/10 rounded-full text-white placeholder:text-white/40 focus:outline-none focus:border-indigo-400/50 focus:bg-white/10 transition-all"
-            />
-          </div>
-          <div className="flex items-center gap-2 flex-wrap">
+          <IconInput
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search models, concepts, originators..."
+            icon={<Search className="w-4 h-4" aria-hidden="true" />}
+            rounded="full"
+            containerClassName="flex-1"
+            className="border-white/10 focus:border-indigo-400/50 focus:bg-white/10"
+          />
+          <div className="flex items-center gap-2 flex-wrap lg:max-w-3xl">
             <Filter className="w-4 h-4 text-white/40 mr-1" />
-            {categories.map((c) => (
-              <button
-                key={c.id}
-                onClick={() => setActiveCat(c.id)}
-                className={`px-4 py-2.5 rounded-full text-sm font-medium transition-all ${
-                  activeCat === c.id
-                    ? "bg-amber-400 text-[#0f1828]"
-                    : "bg-white/5 text-white/70 hover:bg-white/10 border border-white/10"
-                }`}
-              >
-                {c.label}
-              </button>
-            ))}
+            <FilterTabs
+              options={categories}
+              value={activeCat}
+              onChange={setActiveCat}
+              ariaLabel="Filter mental models by category"
+            />
           </div>
         </div>
 
@@ -126,21 +122,15 @@ const ModelsLibrary: React.FC = () => {
                 className="group relative bg-linear-to-br from-white/[0.07] to-white/2 hover:from-white/12 hover:to-white/4 border border-white/10 hover:border-white/20 rounded-2xl p-6 transition-all hover:-translate-y-1 duration-300"
                 style={{ animationDelay: `${i * 30}ms` }}
               >
-                <button
+                <BookmarkButton
+                  iconOnly
                   onClick={(e) => handleBookmark(e, m)}
-                  className={`absolute top-4 right-4 w-9 h-9 rounded-full flex items-center justify-center transition-all ${
-                    saved
-                      ? "bg-amber-400 text-[#0f1828]"
-                      : "bg-white/5 hover:bg-white/15 text-white/50 hover:text-white"
-                  }`}
-                  title={saved ? "Remove bookmark" : "Save to My Library"}
-                >
-                  <Bookmark
-                    className={`w-4 h-4 ${saved ? "fill-current" : ""}`}
-                  />
-                </button>
+                  saved={saved}
+                  className="absolute top-4 right-4"
+                />
 
                 <button
+                  type="button"
                   onClick={() => setSelected(m)}
                   className="text-left w-full"
                 >
@@ -176,76 +166,61 @@ const ModelsLibrary: React.FC = () => {
       </div>
 
       {selected && (
-        <div
-          onClick={() => setSelected(null)}
-          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-6"
+        <ModalShell
+          open={Boolean(selected)}
+          onOpenChange={(open) => {
+            if (!open) setSelected(null);
+          }}
+          title={`${selected.name} details`}
+          className="max-w-2xl"
         >
           <div
-            onClick={(e) => e.stopPropagation()}
-            className="bg-[#111c30] border border-white/10 rounded-3xl max-w-2xl w-full p-8 lg:p-10 relative"
+            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-linear-to-br border ${categoryColors[selected.category]} mb-5`}
           >
-            <button
-              onClick={() => setSelected(null)}
-              className="absolute top-5 right-5 w-9 h-9 rounded-full bg-white/5 hover:bg-white/10 text-white flex items-center justify-center"
-            >
-              ×
-            </button>
-            <div
-              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-linear-to-br border ${categoryColors[selected.category]} mb-5`}
-            >
-              {categoryIcons[selected.category]}
-              {categories.find((c) => c.id === selected.category)?.label}
-            </div>
-            <h3 className="font-serif text-3xl text-white mb-4">
-              {selected.name}
-            </h3>
-            <p className="text-white/70 leading-relaxed mb-6">
-              {selected.shortDesc}
-            </p>
-            <div className="grid grid-cols-2 gap-4 text-sm mb-6">
-              <div className="p-4 bg-white/5 rounded-xl">
-                <div className="text-white/40 text-xs uppercase tracking-wider mb-1">
-                  Origin
-                </div>
-                <div className="text-white">{selected.origin}</div>
+            {categoryIcons[selected.category]}
+            {categories.find((c) => c.id === selected.category)?.label}
+          </div>
+          <h3 className="font-serif text-3xl text-white mb-4">
+            {selected.name}
+          </h3>
+          <p className="text-white/70 leading-relaxed mb-6">
+            {selected.shortDesc}
+          </p>
+          <div className="grid grid-cols-2 gap-4 text-sm mb-6">
+            <div className="p-4 bg-white/5 rounded-xl">
+              <div className="text-white/40 text-xs uppercase tracking-wider mb-1">
+                Origin
               </div>
-              <div className="p-4 bg-white/5 rounded-xl">
-                <div className="text-white/40 text-xs uppercase tracking-wider mb-1">
-                  Difficulty
-                </div>
-                <div className="text-white">{selected.difficulty}</div>
-              </div>
+              <div className="text-white">{selected.origin}</div>
             </div>
-            <div className="flex gap-3">
-              <button
-                onClick={(e) => handleBookmark(e, selected)}
-                className={`flex-1 py-3 rounded-full font-semibold transition-colors flex items-center justify-center gap-2 ${
-                  isBookmarked(selected.id, "model")
-                    ? "bg-amber-400 text-[#0f1828]"
-                    : "bg-white/5 hover:bg-white/10 text-white border border-white/10"
-                }`}
-              >
-                <Bookmark
-                  className={`w-4 h-4 ${isBookmarked(selected.id, "model") ? "fill-current" : ""}`}
-                />
-                {isBookmarked(selected.id, "model")
-                  ? "Saved"
-                  : "Save to Library"}
-              </button>
-              <button
-                onClick={() => {
-                  setSelected(null);
-                  document
-                    .querySelector("#guides")
-                    ?.scrollIntoView({ behavior: "smooth" });
-                }}
-                className="flex-1 py-3 bg-amber-400 hover:bg-amber-300 text-[#0f1828] rounded-full font-semibold transition-colors"
-              >
-                See Step Guides
-              </button>
+            <div className="p-4 bg-white/5 rounded-xl">
+              <div className="text-white/40 text-xs uppercase tracking-wider mb-1">
+                Difficulty
+              </div>
+              <div className="text-white">{selected.difficulty}</div>
             </div>
           </div>
-        </div>
+          <div className="flex gap-3">
+            <BookmarkButton
+              onClick={(e) => handleBookmark(e, selected)}
+              saved={isBookmarked(selected.id, "model")}
+              label="Save to Library"
+              className="flex-1 py-3 font-semibold"
+            />
+            <button
+              type="button"
+              onClick={() => {
+                setSelected(null);
+                document
+                  .querySelector("#guides")
+                  ?.scrollIntoView({ behavior: "smooth" });
+              }}
+              className="flex-1 py-3 bg-amber-400 hover:bg-amber-300 text-[#0f1828] rounded-full font-semibold transition-colors"
+            >
+              See Step Guides
+            </button>
+          </div>
+        </ModalShell>
       )}
     </section>
   );

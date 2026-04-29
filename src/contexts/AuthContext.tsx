@@ -9,15 +9,10 @@ import {
 
 import type { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase";
+import type { Bookmark, BookmarkInput, LibraryItemType } from "@/types/library";
 
-export interface Bookmark {
-  id: string;
-  item_id: string;
-  item_type: "model" | "case";
-  item_title: string;
-  item_meta: any;
-  created_at: string;
-}
+export type AuthMode = "signin" | "signup";
+
 interface AuthCtx {
   user: User | null;
   session: Session | null;
@@ -33,15 +28,12 @@ interface AuthCtx {
     password: string,
   ) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
-  toggleBookmark: (item: {
-    id: string;
-    type: "model" | "case";
-    title: string;
-    meta?: any;
-  }) => Promise<void>;
-  isBookmarked: (id: string, type: "model" | "case") => boolean;
+  toggleBookmark: (item: BookmarkInput) => Promise<void>;
+  isBookmarked: (id: string, type: LibraryItemType) => boolean;
   authModalOpen: boolean;
   setAuthModalOpen: (v: boolean) => void;
+  authMode: AuthMode;
+  setAuthMode: (v: AuthMode) => void;
   myLibraryOpen: boolean;
   setMyLibraryOpen: (v: boolean) => void;
 }
@@ -55,6 +47,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [loading, setLoading] = useState(true);
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
   const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<AuthMode>("signin");
   const [myLibraryOpen, setMyLibraryOpen] = useState(false);
 
   const loadBookmarks = useCallback(async (uid: string) => {
@@ -93,22 +86,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       options: { data: { name: name || email.split("@")[0] } },
     });
     if (error) return { error: error.message };
-    // Also subscribe to CRM
     try {
-      await fetch(
-        "https://famous.ai/api/crm/69ecc440c8cde95900318958/subscribe",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email,
-            name,
-            source: "signup",
-            tags: ["member", "signup"],
-          }),
-        },
-      );
-    } catch {}
+      await fetch("/api/newsletter/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          name,
+          source: "signup",
+          tags: ["member", "signup"],
+        }),
+      });
+    } catch {
+      // Newsletter subscription should not block account creation.
+    }
     return { error: null };
   };
 
@@ -125,16 +116,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setBookmarks([]);
   };
 
-  const isBookmarked = (id: string, type: "model" | "case") =>
+  const isBookmarked = (id: string, type: LibraryItemType) =>
     bookmarks.some((b) => b.item_id === id && b.item_type === type);
 
-  const toggleBookmark = async (item: {
-    id: string;
-    type: "model" | "case";
-    title: string;
-    meta?: any;
-  }) => {
+  const toggleBookmark = async (item: BookmarkInput) => {
     if (!user) {
+      setAuthMode("signup");
       setAuthModalOpen(true);
       return;
     }
@@ -142,8 +129,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       (b) => b.item_id === item.id && b.item_type === item.type,
     );
     if (existing) {
-      await supabase.from("bookmarks").delete().eq("id", existing.id);
-      setBookmarks(bookmarks.filter((b) => b.id !== existing.id));
+      const { error } = await supabase
+        .from("bookmarks")
+        .delete()
+        .eq("id", existing.id);
+      if (!error) {
+        setBookmarks((current) => current.filter((b) => b.id !== existing.id));
+      }
     } else {
       const { data, error } = await supabase
         .from("bookmarks")
@@ -156,7 +148,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         })
         .select()
         .single();
-      if (!error && data) setBookmarks([data as Bookmark, ...bookmarks]);
+      if (!error && data) {
+        setBookmarks((current) => [data as Bookmark, ...current]);
+      }
     }
   };
   return (
@@ -173,6 +167,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         isBookmarked,
         authModalOpen,
         setAuthModalOpen,
+        authMode,
+        setAuthMode,
         myLibraryOpen,
         setMyLibraryOpen,
       }}

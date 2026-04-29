@@ -2,6 +2,8 @@
 import React, { useState } from "react";
 import { X, Plus, GitCompare } from "lucide-react";
 import { mentalModels, MentalModel } from "@/data/modelsData";
+import { ModalShell } from "@/components/ui/modal-shell";
+import { SectionHeader } from "@/components/ui/section-header";
 
 const Comparison: React.FC = () => {
   const [selected, setSelected] = useState<MentalModel[]>([
@@ -39,26 +41,27 @@ const Comparison: React.FC = () => {
       className="py-24 lg:py-32 bg-linear-to-b from-[#0f1828] to-[#0b1220]"
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
-        <div className="max-w-2xl mb-12">
-          <div className="text-amber-400 text-xs font-semibold tracking-[0.3em] uppercase mb-4">
-            — Comparison Matrix
-          </div>
-          <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl text-white leading-tight tracking-tight mb-5">
-            Compare Models{" "}
-            <em className="text-amber-200 italic font-light">Side-by-Side</em>
-          </h2>
-          <p className="text-white/60 text-lg leading-relaxed">
-            Pick up to 4 frameworks and instantly see how their use cases,
-            complexity, and origins differ.
-          </p>
-        </div>
+        <SectionHeader
+          eyebrow="— Comparison Matrix"
+          title={
+            <>
+              Compare Models{" "}
+              <em className="text-amber-200 italic font-light">
+                Side-by-Side
+              </em>
+            </>
+          }
+          description="Pick up to 4 frameworks and instantly see how their use cases, complexity, and origins differ."
+        />
 
         <div className="bg-linear-to-br from-white/6 to-white/2 border border-white/10 rounded-3xl overflow-hidden">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-white/10">
             {selected.map((m) => (
               <div key={m.id} className="p-6 relative">
                 <button
+                  type="button"
                   onClick={() => remove(m.id)}
+                  aria-label={`Remove ${m.name} from comparison`}
                   className="absolute top-4 right-4 w-7 h-7 rounded-full bg-white/5 hover:bg-rose-500/20 hover:text-rose-300 text-white/50 flex items-center justify-center transition-colors"
                 >
                   <X className="w-3.5 h-3.5" />
@@ -83,6 +86,7 @@ const Comparison: React.FC = () => {
 
             {selected.length < 4 && (
               <button
+                type="button"
                 onClick={() => setPicker(true)}
                 className="p-6 flex flex-col items-center justify-center gap-3 text-white/40 hover:text-white hover:bg-white/3 min-h-75 transition-colors"
               >
@@ -102,28 +106,22 @@ const Comparison: React.FC = () => {
 
         {/* Picker Modal */}
         {picker && (
-          <div
-            onClick={() => setPicker(false)}
-            className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-6"
+          <ModalShell
+            open={picker}
+            onOpenChange={setPicker}
+            title="Add a model to compare"
+            className="max-w-3xl"
+            contentClassName="max-h-[72vh] overflow-y-auto pr-1"
           >
-            <div
-              onClick={(e) => e.stopPropagation()}
-              className="bg-[#111c30] border border-white/10 rounded-3xl max-w-3xl w-full max-h-[80vh] overflow-y-auto p-8"
-            >
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="font-serif text-2xl text-white">Add a Model</h3>
-                <button
-                  onClick={() => setPicker(false)}
-                  className="w-9 h-9 rounded-full bg-white/5 hover:bg-white/10 text-white flex items-center justify-center"
-                >
-                  ×
-                </button>
-              </div>
+              <h3 className="font-serif text-2xl text-white mb-6">
+                Add a Model
+              </h3>
               <div className="grid sm:grid-cols-2 gap-3">
                 {mentalModels
                   .filter((m) => !selected.find((s) => s.id === m.id))
                   .map((m) => (
                     <button
+                      type="button"
                       key={m.id}
                       onClick={() => add(m)}
                       className="text-left p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-colors"
@@ -135,8 +133,7 @@ const Comparison: React.FC = () => {
                     </button>
                   ))}
               </div>
-            </div>
-          </div>
+          </ModalShell>
         )}
       </div>
     </section>

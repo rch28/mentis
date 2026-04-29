@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { ChevronDown, CheckCircle2 } from "lucide-react";
 import { stepGuides } from "@/data/modelsData";
+import { SectionHeader } from "@/components/ui/section-header";
 
 const StepGuides: React.FC = () => {
   const [active, setActive] = useState(stepGuides[0].id);
@@ -15,19 +16,17 @@ const StepGuides: React.FC = () => {
       className="py-24 lg:py-32 bg-linear-to-b from-[#0b1220] to-[#0f1828] relative"
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
-        <div className="max-w-3xl mb-14">
-          <div className="text-amber-400 text-xs font-semibold tracking-[0.3em] uppercase mb-4">
-            — Step-by-Step Guides
-          </div>
-          <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl text-white leading-tight tracking-tight mb-5">
-            From Theory to{" "}
-            <em className="text-amber-200  font-light italic">Practice</em>
-          </h2>
-          <p className="text-white/60 text-lg leading-relaxed">
-            Each framework distilled into a clear, sequential process. Follow
-            along, see the example, apply it tonight.
-          </p>
-        </div>
+        <SectionHeader
+          eyebrow="— Step-by-Step Guides"
+          title={
+            <>
+              From Theory to{" "}
+              <em className="text-amber-200 font-light italic">Practice</em>
+            </>
+          }
+          description="Each framework distilled into a clear, sequential process. Follow along, see the example, apply it tonight."
+          className="mb-14"
+        />
 
         <div className="grid lg:grid-cols-12 gap-8">
           {/* Sidebar */}
@@ -36,6 +35,7 @@ const StepGuides: React.FC = () => {
               {stepGuides.map((g, i) => (
                 <button
                   key={g.id}
+                  type="button"
                   onClick={() => {
                     setActive(g.id);
                     setExpanded(0);
@@ -87,6 +87,7 @@ const StepGuides: React.FC = () => {
                       className={`border border-white/10 rounded-2xl overflow-hidden transition-all ${isOpen ? "bg-linear-to-br from-indigo-500/10 to-transparent" : "bg-white/2"}`}
                     >
                       <button
+                        type="button"
                         onClick={() => setExpanded(isOpen ? null : i)}
                         className="w-full flex items-center gap-5 p-5 lg:p-6 text-left hover:bg-white/3 transition-colors"
                       >
@@ -115,7 +116,7 @@ const StepGuides: React.FC = () => {
                               Real-World Example
                             </div>
                             <p className="text-amber-50/90 italic leading-relaxed">
-                              "{step.example}"
+                              &quot;{step.example}&quot;
                             </p>
                           </div>
                         </div>

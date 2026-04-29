@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { Mail, Check, Sparkles } from "lucide-react";
+import { IconInput } from "@/components/ui/icon-input";
 
 const Newsletter: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -18,19 +19,18 @@ const Newsletter: React.FC = () => {
     }
     setStatus("loading");
     try {
-      const res = await fetch("/api/crm/69ecc440c8cde95900318958/subscribe", {
+      const res = await fetch("/api/newsletter/subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, source: "newsletter" }),
       });
-      if (!res.ok) throw new Error();
+      if (!res.ok) throw new Error("Subscription failed");
       setStatus("success");
       setMessage("Welcome aboard. Check your inbox for your starter pathway.");
       setEmail("");
     } catch {
-      setStatus("success"); // Still show success for UX
-      setMessage("Welcome aboard. Check your inbox for your starter pathway.");
-      setEmail("");
+      setStatus("error");
+      setMessage("Subscription is unavailable right now. Please try again.");
     }
   };
 
@@ -76,11 +76,9 @@ const Newsletter: React.FC = () => {
               </ul>
             </div>
 
-            <div>
-              <form onSubmit={submit} className="space-y-3">
-                <div className="relative">
-                  <Mail className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
-                  <input
+              <div>
+                <form onSubmit={submit} className="space-y-3">
+                  <IconInput
                     type="email"
                     value={email}
                     onChange={(e) => {
@@ -88,9 +86,11 @@ const Newsletter: React.FC = () => {
                       setStatus("idle");
                     }}
                     placeholder="your@email.com"
+                    icon={<Mail className="w-4 h-4" aria-hidden="true" />}
+                    rounded="full"
+                    required
                     className="w-full pl-12 pr-5 py-4 bg-white/5 border border-white/15 rounded-full text-white placeholder:text-white/40 focus:outline-none focus:border-amber-400/50 transition-all"
                   />
-                </div>
                 <button
                   type="submit"
                   disabled={status === "loading"}

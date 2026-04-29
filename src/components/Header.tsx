@@ -3,20 +3,26 @@ import React, { useState, useEffect } from "react";
 import {
   Menu,
   X,
-  Brain,
   Bookmark,
   LogOut,
   User as UserIcon,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import Link from "next/link";
+import BrandMark from "@/components/BrandMark";
 const Header: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [progress, setProgress] = useState(0);
   const [accountOpen, setAccountOpen] = useState(false);
-  const { user, signOut, setAuthModalOpen, setMyLibraryOpen, bookmarks } =
-    useAuth();
+  const {
+    user,
+    signOut,
+    setAuthModalOpen,
+    setAuthMode,
+    setMyLibraryOpen,
+    bookmarks,
+  } = useAuth();
 
   useEffect(() => {
     const onScroll = () => {
@@ -30,6 +36,7 @@ const Header: React.FC = () => {
   }, []);
 
   const links = [
+    { href: "#coach", label: "Coach" },
     { href: "#library", label: "Library" },
     { href: "#guides", label: "Step Guides" },
     { href: "#cases", label: "Case Studies" },
@@ -59,23 +66,14 @@ const Header: React.FC = () => {
           }}
           className="flex items-center gap-3 group"
         >
-          <div className="w-10 h-10 rounded-xl bg-linear-to-br from-indigo-500 to-blue-600 flex items-center justify-center shadow-lg shadow-indigo-500/30 group-hover:shadow-indigo-500/60 transition-shadow">
-            <Brain className="w-5 h-5 text-white" />
-          </div>
-          <div className="text-white">
-            <div className="font-serif text-xl leading-none tracking-tight">
-              Mentis
-            </div>
-            <div className="text-[10px] uppercase tracking-[0.25em] text-indigo-300/80">
-              Systems Thinking
-            </div>
-          </div>
+          <BrandMark iconClassName="group-hover:shadow-indigo-500/60 transition-shadow" />
         </Link>
 
         <nav className="hidden lg:flex items-center gap-9">
           {links.map((l) => (
             <button
               key={l.href}
+              type="button"
               onClick={() => scrollTo(l.href)}
               className="text-sm text-white/70 hover:text-white transition-colors font-medium tracking-wide cursor-pointer"
             >
@@ -88,6 +86,7 @@ const Header: React.FC = () => {
           {user ? (
             <>
               <button
+                type="button"
                 onClick={() => setMyLibraryOpen(true)}
                 className="relative inline-flex items-center gap-2 px-4 py-2 text-sm text-white/80 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 rounded-full transition-colors"
               >
@@ -101,7 +100,10 @@ const Header: React.FC = () => {
               </button>
               <div className="relative">
                 <button
+                  type="button"
                   onClick={() => setAccountOpen(!accountOpen)}
+                  aria-expanded={accountOpen}
+                  aria-haspopup="menu"
                   className="w-10 h-10 rounded-full bg-linear-to-br from-amber-400 to-amber-500 text-[#0f1828] font-bold flex items-center justify-center hover:scale-105 transition-transform"
                   title={userName}
                 >
@@ -123,6 +125,7 @@ const Header: React.FC = () => {
                         </div>
                       </div>
                       <button
+                        type="button"
                         onClick={() => {
                           setAccountOpen(false);
                           setMyLibraryOpen(true);
@@ -133,6 +136,7 @@ const Header: React.FC = () => {
                         {bookmarks.length})
                       </button>
                       <button
+                        type="button"
                         onClick={async () => {
                           setAccountOpen(false);
                           await signOut();
@@ -149,13 +153,21 @@ const Header: React.FC = () => {
           ) : (
             <>
               <button
-                onClick={() => setAuthModalOpen(true)}
+                type="button"
+                onClick={() => {
+                  setAuthMode("signin");
+                  setAuthModalOpen(true);
+                }}
                 className="px-4 py-2 text-sm font-medium text-white/80 hover:text-white transition-colors"
               >
                 Sign In
               </button>
               <button
-                onClick={() => setAuthModalOpen(true)}
+                type="button"
+                onClick={() => {
+                  setAuthMode("signup");
+                  setAuthModalOpen(true);
+                }}
                 className="px-5 py-2.5 text-sm font-medium text-[#0f1828] bg-amber-400 hover:bg-amber-300 rounded-full transition-colors shadow-lg shadow-amber-400/20"
               >
                 Sign Up
@@ -165,7 +177,10 @@ const Header: React.FC = () => {
         </div>
 
         <button
+          type="button"
           onClick={() => setOpen(!open)}
+          aria-expanded={open}
+          aria-label={open ? "Close navigation menu" : "Open navigation menu"}
           className="lg:hidden text-white p-2"
         >
           {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -185,6 +200,7 @@ const Header: React.FC = () => {
             {links.map((l) => (
               <button
                 key={l.href}
+                type="button"
                 onClick={() => scrollTo(l.href)}
                 className="text-left text-white/80 hover:text-white py-2"
               >
@@ -194,6 +210,7 @@ const Header: React.FC = () => {
             {user ? (
               <>
                 <button
+                  type="button"
                   onClick={() => {
                     setOpen(false);
                     setMyLibraryOpen(true);
@@ -204,6 +221,7 @@ const Header: React.FC = () => {
                   {bookmarks.length})
                 </button>
                 <button
+                  type="button"
                   onClick={() => {
                     setOpen(false);
                     signOut();
@@ -215,8 +233,10 @@ const Header: React.FC = () => {
               </>
             ) : (
               <button
+                type="button"
                 onClick={() => {
                   setOpen(false);
+                  setAuthMode("signin");
                   setAuthModalOpen(true);
                 }}
                 className="px-5 py-3 text-sm font-medium text-[#0f1828] bg-amber-400 rounded-full flex items-center justify-center gap-2"
