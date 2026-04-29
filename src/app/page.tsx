@@ -1,6 +1,7 @@
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import ModelsLibrary from "@/components/ModelsLibrary";
+import StepGuides from "@/components/StepGuides";
 
 export default function Home() {
   return (
@@ -9,6 +10,7 @@ export default function Home() {
       <main>
         <Hero />
         <ModelsLibrary />
+        <StepGuides />
       </main>
     </div>
   );
