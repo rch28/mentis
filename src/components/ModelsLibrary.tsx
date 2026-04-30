@@ -11,10 +11,42 @@ import {
 import { mentalModels, categories, MentalModel } from "@/data/modelsData";
 import { useAuth } from "@/contexts/AuthContext";
 import { BookmarkButton } from "@/components/ui/bookmark-button";
+import { CategoryBadge } from "@/components/ui/category-badge";
 import { FilterTabs } from "@/components/ui/filter-tabs";
 import { IconInput } from "@/components/ui/icon-input";
 import { ModalShell } from "@/components/ui/modal-shell";
-import { SectionHeader } from "@/components/ui/section-header";
+import { scrollToSection } from "@/lib/ui-helpers";
+import { SectionHeader } from "./ui/section-header";
+
+/**
+ * Map of category metadata (icons, colors, labels)
+ * Reduces repeated lookups and provides single source of truth
+ */
+const categoryMap = {
+  decision: {
+    icon: <BookOpen className="w-4 h-4" />,
+    color:
+      "from-amber-400/20 to-amber-500/5 border-amber-400/30 text-amber-300",
+    label: "Decision",
+  },
+  problem: {
+    icon: <Lightbulb className="w-4 h-4" />,
+    color:
+      "from-emerald-400/20 to-emerald-500/5 border-emerald-400/30 text-emerald-300",
+    label: "Problem",
+  },
+  strategic: {
+    icon: <Network className="w-4 h-4" />,
+    color:
+      "from-indigo-400/20 to-indigo-500/5 border-indigo-400/30 text-indigo-300",
+    label: "Strategic",
+  },
+  bias: {
+    icon: <AlertTriangle className="w-4 h-4" />,
+    color: "from-rose-400/20 to-rose-500/5 border-rose-400/30 text-rose-300",
+    label: "Bias",
+  },
+};
 
 const categoryIcons: Record<string, React.ReactNode> = {
   decision: <BookOpen className="w-4 h-4" />,
@@ -39,16 +71,20 @@ const ModelsLibrary: React.FC = () => {
   const [selected, setSelected] = useState<MentalModel | null>(null);
   const { isBookmarked, toggleBookmark } = useAuth();
 
+  // Filter models by category and search query
+  // Normalizes search query once for efficiency
   const filtered = useMemo(() => {
+    const normalizedQuery = query.toLowerCase();
     return mentalModels.filter((m) => {
       const matchCat = activeCat === "all" || m.category === activeCat;
       const matchQ =
-        m.name.toLowerCase().includes(query.toLowerCase()) ||
-        m.shortDesc.toLowerCase().includes(query.toLowerCase());
+        m.name.toLowerCase().includes(normalizedQuery) ||
+        m.shortDesc.toLowerCase().includes(normalizedQuery);
       return matchCat && matchQ;
     });
   }, [activeCat, query]);
 
+  // Handle bookmark toggle with standardized payload structure
   const handleBookmark = (e: React.MouseEvent, m: MentalModel) => {
     e.stopPropagation();
     toggleBookmark({
@@ -134,12 +170,20 @@ const ModelsLibrary: React.FC = () => {
                   onClick={() => setSelected(m)}
                   className="text-left w-full"
                 >
-                  <div
-                    className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-linear-to-br border ${categoryColors[m.category]} mb-4`}
-                  >
-                    {categoryIcons[m.category]}
-                    {categories.find((c) => c.id === m.category)?.label}
-                  </div>
+                  <CategoryBadge
+                    categoryIcon={
+                      categoryMap[m.category as keyof typeof categoryMap]?.icon
+                    }
+                    categoryLabel={
+                      categories.find((c) => c.id === m.category)?.label ||
+                      m.category
+                    }
+                    categoryColor={
+                      categoryMap[m.category as keyof typeof categoryMap]
+                        ?.color || ""
+                    }
+                    className="mb-4"
+                  />
                   <h3 className="font-serif text-xl text-white leading-tight mb-3 pr-10 group-hover:text-amber-200 transition-colors">
                     {m.name}
                   </h3>
@@ -174,12 +218,20 @@ const ModelsLibrary: React.FC = () => {
           title={`${selected.name} details`}
           className="max-w-2xl"
         >
-          <div
-            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-linear-to-br border ${categoryColors[selected.category]} mb-5`}
-          >
-            {categoryIcons[selected.category]}
-            {categories.find((c) => c.id === selected.category)?.label}
-          </div>
+          <CategoryBadge
+            categoryIcon={
+              categoryMap[selected.category as keyof typeof categoryMap]?.icon
+            }
+            categoryLabel={
+              categories.find((c) => c.id === selected.category)?.label ||
+              selected.category
+            }
+            categoryColor={
+              categoryMap[selected.category as keyof typeof categoryMap]
+                ?.color || ""
+            }
+            className="mb-5"
+          />
           <h3 className="font-serif text-3xl text-white mb-4">
             {selected.name}
           </h3>
@@ -211,9 +263,7 @@ const ModelsLibrary: React.FC = () => {
               type="button"
               onClick={() => {
                 setSelected(null);
-                document
-                  .querySelector("#guides")
-                  ?.scrollIntoView({ behavior: "smooth" });
+                scrollToSection("guides");
               }}
               className="flex-1 py-3 bg-amber-400 hover:bg-amber-300 text-[#0f1828] rounded-full font-semibold transition-colors"
             >
