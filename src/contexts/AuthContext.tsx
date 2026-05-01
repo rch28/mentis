@@ -6,6 +6,7 @@ import {
   useEffect,
   useState,
 } from "react";
+import { useRouter } from "next/navigation";
 
 import type { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase";
@@ -42,6 +43,7 @@ const AuthContext = createContext<AuthCtx | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
+  const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
@@ -116,13 +118,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setBookmarks([]);
   };
 
+  const redirectToAuth = useCallback(
+    (mode: AuthMode) => {
+      setAuthMode(mode);
+      setAuthModalOpen(false);
+      router.push(`/sign-in?mode=${mode}`);
+    },
+    [router],
+  );
+
   const isBookmarked = (id: string, type: LibraryItemType) =>
     bookmarks.some((b) => b.item_id === id && b.item_type === type);
 
   const toggleBookmark = async (item: BookmarkInput) => {
     if (!user) {
-      setAuthMode("signup");
-      setAuthModalOpen(true);
+      redirectToAuth("signup");
       return;
     }
     const existing = bookmarks.find(

@@ -1,28 +1,17 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import {
-  Menu,
-  X,
-  Bookmark,
-  LogOut,
-  User as UserIcon,
-} from "lucide-react";
+import { Menu, X, Bookmark, LogOut, User as UserIcon } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import BrandMark from "@/components/BrandMark";
 const Header: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [progress, setProgress] = useState(0);
   const [accountOpen, setAccountOpen] = useState(false);
-  const {
-    user,
-    signOut,
-    setAuthModalOpen,
-    setAuthMode,
-    setMyLibraryOpen,
-    bookmarks,
-  } = useAuth();
+  const router = useRouter();
+  const { user, signOut, setMyLibraryOpen, bookmarks } = useAuth();
 
   useEffect(() => {
     const onScroll = () => {
@@ -155,8 +144,7 @@ const Header: React.FC = () => {
               <button
                 type="button"
                 onClick={() => {
-                  setAuthMode("signin");
-                  setAuthModalOpen(true);
+                  router.push("/sign-in?mode=signin");
                 }}
                 className="px-4 py-2 text-sm font-medium text-white/80 hover:text-white transition-colors"
               >
@@ -165,8 +153,7 @@ const Header: React.FC = () => {
               <button
                 type="button"
                 onClick={() => {
-                  setAuthMode("signup");
-                  setAuthModalOpen(true);
+                  router.push("/sign-in?mode=signup");
                 }}
                 className="px-5 py-2.5 text-sm font-medium text-[#0f1828] bg-amber-400 hover:bg-amber-300 rounded-full transition-colors shadow-lg shadow-amber-400/20"
               >
@@ -236,8 +223,7 @@ const Header: React.FC = () => {
                 type="button"
                 onClick={() => {
                   setOpen(false);
-                  setAuthMode("signin");
-                  setAuthModalOpen(true);
+                  router.push("/sign-in?mode=signin");
                 }}
                 className="px-5 py-3 text-sm font-medium text-[#0f1828] bg-amber-400 rounded-full flex items-center justify-center gap-2"
               >

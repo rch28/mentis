@@ -1,4 +1,3 @@
-import AuthModal from "@/components/AuthModal";
 import CaseStudies from "@/components/CaseStudies";
 import Comparison from "@/components/Comparison";
 import DecisionCoach from "@/components/DecisionCoach";
@@ -26,7 +25,6 @@ export default function Home() {
         <Newsletter />
       </main>
       <Footer />
-      <AuthModal />
       <MyLibrary />
     </div>
   );
