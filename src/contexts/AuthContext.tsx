@@ -28,6 +28,7 @@ interface AuthCtx {
     email: string,
     password: string,
   ) => Promise<{ error: string | null }>;
+  signInWithGoogle: () => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
   toggleBookmark: (item: BookmarkInput) => Promise<void>;
   isBookmarked: (id: string, type: LibraryItemType) => boolean;
@@ -113,6 +114,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     return { error: error ? error.message : null };
   };
 
+  const signInWithGoogle = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/`,
+      },
+    });
+    return { error: error ? error.message : null };
+  };
+
   const signOut = async () => {
     await supabase.auth.signOut();
     setBookmarks([]);
@@ -172,6 +183,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         bookmarks,
         signUp,
         signIn,
+        signInWithGoogle,
         signOut,
         toggleBookmark,
         isBookmarked,

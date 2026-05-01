@@ -7,6 +7,7 @@ import DemoCredentials from "./DemoCredentials";
 import LoginForm from "./LoginForm";
 import SignUpForm from "./SignUpForm";
 import type { AuthMode } from "@/contexts/AuthContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface AuthScreenProps {
   initialMode?: AuthMode;
@@ -16,10 +17,23 @@ export default function AuthScreen({
   initialMode = "signin",
 }: AuthScreenProps) {
   const [activeTab, setActiveTab] = useState<AuthMode>(initialMode);
+  const [googleLoading, setGoogleLoading] = useState(false);
+  const [googleError, setGoogleError] = useState("");
+  const { signInWithGoogle } = useAuth();
 
   useEffect(() => {
     setActiveTab(initialMode);
   }, [initialMode]);
+
+  const handleGoogleSignIn = async () => {
+    setGoogleLoading(true);
+    setGoogleError("");
+    const result = await signInWithGoogle();
+    if (result.error) {
+      setGoogleError(result.error);
+      setGoogleLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen flex bg-[#f7f5f2] text-[#1c1917]">
@@ -72,9 +86,21 @@ export default function AuthScreen({
             </button>
           </div>
 
+          {googleError && (
+            <div
+              className="bg-rose-50 border border-rose-200 rounded-xl p-3 flex items-start gap-2 mb-6"
+              role="alert"
+            >
+              <span className="text-rose-600 text-sm">!</span>
+              <p className="text-rose-600 text-sm font-medium">{googleError}</p>
+            </div>
+          )}
+
           <button
             type="button"
-            className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl border border-[#e3ded6] bg-white hover:bg-[#f0ebe5] transition-all duration-150 active:scale-[0.98] mb-6 shadow-sm"
+            onClick={handleGoogleSignIn}
+            disabled={googleLoading}
+            className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl border border-[#e3ded6] bg-white hover:bg-[#f0ebe5] transition-all duration-150 active:scale-[0.98] mb-6 shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
             aria-label="Continue with Google"
           >
             <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
@@ -95,7 +121,9 @@ export default function AuthScreen({
                 fill="#EA4335"
               />
             </svg>
-            <span className="text-sm font-semibold">Continue with Google</span>
+            <span className="text-sm font-semibold">
+              {googleLoading ? "Connecting..." : "Continue with Google"}
+            </span>
           </button>
 
           <div className="flex items-center gap-3 mb-6">
