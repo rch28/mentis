@@ -1,7 +1,17 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Menu, X, Bookmark, LogOut, User as UserIcon } from "lucide-react";
+import {
+  Menu,
+  X,
+  Bookmark,
+  LogOut,
+  User as UserIcon,
+  Moon,
+  Sun,
+  LayoutDashboard,
+} from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTheme } from "@/contexts/ThemeContext";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import BrandMark from "@/components/BrandMark";
@@ -12,6 +22,7 @@ const Header: React.FC = () => {
   const [accountOpen, setAccountOpen] = useState(false);
   const router = useRouter();
   const { user, signOut, setMyLibraryOpen, bookmarks } = useAuth();
+  const { isDark, toggleDarkMode } = useTheme();
 
   useEffect(() => {
     const onScroll = () => {
@@ -76,14 +87,6 @@ const Header: React.FC = () => {
             <>
               <button
                 type="button"
-                onClick={() => router.push("/dashboard")}
-                className="inline-flex items-center gap-2 px-4 py-2 text-sm text-white/80 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 rounded-full transition-colors"
-              >
-                <UserIcon className="w-4 h-4" />
-                Dashboard
-              </button>
-              <button
-                type="button"
                 onClick={() => setMyLibraryOpen(true)}
                 className="relative inline-flex items-center gap-2 px-4 py-2 text-sm text-white/80 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 rounded-full transition-colors"
               >
@@ -125,20 +128,47 @@ const Header: React.FC = () => {
                         type="button"
                         onClick={() => {
                           setAccountOpen(false);
+                          router.push("/dashboard");
+                        }}
+                        className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-white/80 hover:bg-white/5 transition-colors"
+                      >
+                        <LayoutDashboard className="w-4 h-4" /> Dashboard
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setAccountOpen(false);
                           setMyLibraryOpen(true);
                         }}
-                        className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-white/80 hover:bg-white/5"
+                        className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-white/80 hover:bg-white/5 transition-colors"
                       >
                         <Bookmark className="w-4 h-4" /> My Library (
                         {bookmarks.length})
                       </button>
+                      <div className="px-2 py-2 border-t border-white/10">
+                        <button
+                          type="button"
+                          onClick={toggleDarkMode}
+                          className="w-full flex items-center gap-3 px-2 py-2.5 text-sm text-white/80 hover:bg-white/5 transition-colors rounded-lg"
+                        >
+                          {isDark ? (
+                            <>
+                              <Sun className="w-4 h-4" /> Light Mode
+                            </>
+                          ) : (
+                            <>
+                              <Moon className="w-4 h-4" /> Dark Mode
+                            </>
+                          )}
+                        </button>
+                      </div>
                       <button
                         type="button"
                         onClick={async () => {
                           setAccountOpen(false);
                           await signOut();
                         }}
-                        className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-rose-300 hover:bg-white/5"
+                        className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-rose-300 hover:bg-white/5 transition-colors border-t border-white/10"
                       >
                         <LogOut className="w-4 h-4" /> Sign out
                       </button>
@@ -208,12 +238,40 @@ const Header: React.FC = () => {
                   type="button"
                   onClick={() => {
                     setOpen(false);
+                    router.push("/dashboard");
+                  }}
+                  className="text-left text-white/80 py-2 flex items-center gap-2"
+                >
+                  <LayoutDashboard className="w-4 h-4" /> Dashboard
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOpen(false);
                     setMyLibraryOpen(true);
                   }}
                   className="text-left text-white/80 py-2 flex items-center gap-2"
                 >
                   <Bookmark className="w-4 h-4" /> My Library (
                   {bookmarks.length})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOpen(false);
+                    toggleDarkMode();
+                  }}
+                  className="text-left text-white/80 py-2 flex items-center gap-2"
+                >
+                  {isDark ? (
+                    <>
+                      <Sun className="w-4 h-4" /> Light Mode
+                    </>
+                  ) : (
+                    <>
+                      <Moon className="w-4 h-4" /> Dark Mode
+                    </>
+                  )}
                 </button>
                 <button
                   type="button"
