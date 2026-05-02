@@ -76,6 +76,14 @@ const Header: React.FC = () => {
             <>
               <button
                 type="button"
+                onClick={() => router.push("/dashboard")}
+                className="inline-flex items-center gap-2 px-4 py-2 text-sm text-white/80 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 rounded-full transition-colors"
+              >
+                <UserIcon className="w-4 h-4" />
+                Dashboard
+              </button>
+              <button
+                type="button"
                 onClick={() => setMyLibraryOpen(true)}
                 className="relative inline-flex items-center gap-2 px-4 py-2 text-sm text-white/80 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 rounded-full transition-colors"
               >

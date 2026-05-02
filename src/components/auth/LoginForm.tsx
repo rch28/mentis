@@ -15,9 +15,13 @@ interface LoginFormValues {
 
 interface LoginFormProps {
   onSwitchToSignUp: () => void;
+  redirectTo?: string;
 }
 
-export default function LoginForm({ onSwitchToSignUp }: LoginFormProps) {
+export default function LoginForm({
+  onSwitchToSignUp,
+  redirectTo = "/dashboard",
+}: LoginFormProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [authError, setAuthError] = useState("");
@@ -44,7 +48,7 @@ export default function LoginForm({ onSwitchToSignUp }: LoginFormProps) {
       return;
     }
 
-    router.push("/");
+    router.push(redirectTo);
   };
 
   return (

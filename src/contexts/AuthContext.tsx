@@ -28,7 +28,7 @@ interface AuthCtx {
     email: string,
     password: string,
   ) => Promise<{ error: string | null }>;
-  signInWithGoogle: () => Promise<{ error: string | null }>;
+  signInWithGoogle: (nextPath?: string) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
   toggleBookmark: (item: BookmarkInput) => Promise<void>;
   isBookmarked: (id: string, type: LibraryItemType) => boolean;
@@ -41,13 +41,22 @@ interface AuthCtx {
 }
 const AuthContext = createContext<AuthCtx | undefined>(undefined);
 
-const getAuthRedirectUrl = () => {
+const getSafeRedirectPath = (value?: string) => {
+  if (!value || !value.startsWith("/") || value.startsWith("//")) return "/dashboard";
+  return value;
+};
+
+const getAuthRedirectUrl = (nextPath?: string) => {
   const configuredUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
   const appUrl =
     configuredUrl ||
     (typeof window !== "undefined" ? window.location.origin : "");
 
-  return appUrl ? `${appUrl.replace(/\/$/, "")}/auth/callback` : undefined;
+  if (!appUrl) return undefined;
+
+  const callbackUrl = new URL(`${appUrl.replace(/\/$/, "")}/auth/callback`);
+  callbackUrl.searchParams.set("next", getSafeRedirectPath(nextPath));
+  return callbackUrl.toString();
 };
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
@@ -138,13 +147,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     return { error: error ? error.message : null };
   };
 
-  const signInWithGoogle = async () => {
+  const signInWithGoogle = async (nextPath?: string) => {
     if (!supabase) return { error: supabaseConfigError };
 
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: getAuthRedirectUrl(),
+        redirectTo: getAuthRedirectUrl(nextPath),
       },
     });
     return { error: error ? error.message : null };

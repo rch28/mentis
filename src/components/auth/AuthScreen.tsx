@@ -12,10 +12,12 @@ import { useAuth } from "@/contexts/AuthContext";
 
 interface AuthScreenProps {
   initialMode?: AuthMode;
+  redirectTo?: string;
 }
 
 export default function AuthScreen({
   initialMode = "signin",
+  redirectTo = "/dashboard",
 }: AuthScreenProps) {
   const [activeTab, setActiveTab] = useState<AuthMode>(initialMode);
   const [googleLoading, setGoogleLoading] = useState(false);
@@ -26,7 +28,7 @@ export default function AuthScreen({
     setGoogleLoading(true);
     setGoogleError("");
     try {
-      const result = await signInWithGoogle();
+      const result = await signInWithGoogle(redirectTo);
       if (result.error) {
         setGoogleError(result.error);
         setGoogleLoading(false);
@@ -136,9 +138,15 @@ export default function AuthScreen({
           </div>
 
           {activeTab === "signin" ? (
-            <LoginForm onSwitchToSignUp={() => setActiveTab("signup")} />
+            <LoginForm
+              redirectTo={redirectTo}
+              onSwitchToSignUp={() => setActiveTab("signup")}
+            />
           ) : (
-            <SignUpForm onSwitchToLogin={() => setActiveTab("signin")} />
+            <SignUpForm
+              redirectTo={redirectTo}
+              onSwitchToLogin={() => setActiveTab("signin")}
+            />
           )}
 
           <DemoCredentials />

@@ -17,9 +17,13 @@ interface SignUpFormValues {
 
 interface SignUpFormProps {
   onSwitchToLogin: () => void;
+  redirectTo?: string;
 }
 
-export default function SignUpForm({ onSwitchToLogin }: SignUpFormProps) {
+export default function SignUpForm({
+  onSwitchToLogin,
+  redirectTo = "/dashboard",
+}: SignUpFormProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [authError, setAuthError] = useState("");
@@ -72,7 +76,7 @@ export default function SignUpForm({ onSwitchToLogin }: SignUpFormProps) {
       return;
     }
 
-    router.push("/");
+    router.push(redirectTo);
   };
 
   return (
