@@ -10,5 +10,5 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
   const modeParam = Array.isArray(mode) ? mode[0] : mode;
   const initialMode: AuthMode = modeParam === "signup" ? "signup" : "signin";
 
-  return <AuthScreen initialMode={initialMode} />;
+  return <AuthScreen key={initialMode} initialMode={initialMode} />;
 }

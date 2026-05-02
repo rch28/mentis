@@ -48,23 +48,6 @@ const categoryMap = {
   },
 };
 
-const categoryIcons: Record<string, React.ReactNode> = {
-  decision: <BookOpen className="w-4 h-4" />,
-  problem: <Lightbulb className="w-4 h-4" />,
-  strategic: <Network className="w-4 h-4" />,
-  bias: <AlertTriangle className="w-4 h-4" />,
-};
-
-const categoryColors: Record<string, string> = {
-  decision:
-    "from-amber-400/20 to-amber-500/5 border-amber-400/30 text-amber-300",
-  problem:
-    "from-emerald-400/20 to-emerald-500/5 border-emerald-400/30 text-emerald-300",
-  strategic:
-    "from-indigo-400/20 to-indigo-500/5 border-indigo-400/30 text-indigo-300",
-  bias: "from-rose-400/20 to-rose-500/5 border-rose-400/30 text-rose-300",
-};
-
 const ModelsLibrary: React.FC = () => {
   const [activeCat, setActiveCat] = useState("all");
   const [query, setQuery] = useState("");

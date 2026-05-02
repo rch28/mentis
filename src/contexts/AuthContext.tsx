@@ -9,7 +9,7 @@ import {
 import { useRouter } from "next/navigation";
 
 import type { User, Session } from "@supabase/supabase-js";
-import { supabase } from "@/lib/supabase";
+import { supabase, supabaseConfigError } from "@/lib/supabase";
 import type { Bookmark, BookmarkInput, LibraryItemType } from "@/types/library";
 
 export type AuthMode = "signin" | "signup";
@@ -41,19 +41,30 @@ interface AuthCtx {
 }
 const AuthContext = createContext<AuthCtx | undefined>(undefined);
 
+const getAuthRedirectUrl = () => {
+  const configuredUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+  const appUrl =
+    configuredUrl ||
+    (typeof window !== "undefined" ? window.location.origin : "");
+
+  return appUrl ? `${appUrl.replace(/\/$/, "")}/auth/callback` : undefined;
+};
+
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(Boolean(supabase));
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState<AuthMode>("signin");
   const [myLibraryOpen, setMyLibraryOpen] = useState(false);
 
   const loadBookmarks = useCallback(async (uid: string) => {
+    if (!supabase) return;
+
     const { data, error } = await supabase
       .from("bookmarks")
       .select("*")
@@ -63,12 +74,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   }, []);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
-      if (session?.user) loadBookmarks(session.user.id);
-    });
+    if (!supabase) return;
+
+    supabase.auth
+      .getSession()
+      .then(({ data: { session } }) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+        setLoading(false);
+        if (session?.user) loadBookmarks(session.user.id);
+      })
+      .catch(() => {
+        setSession(null);
+        setUser(null);
+        setLoading(false);
+      });
 
     const {
       data: { subscription },
@@ -83,6 +103,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   }, [loadBookmarks]);
 
   const signUp = async (email: string, password: string, name?: string) => {
+    if (!supabase) return { error: supabaseConfigError };
+
     const { error } = await supabase.auth.signUp({
       email,
       password,
@@ -107,6 +129,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const signIn = async (email: string, password: string) => {
+    if (!supabase) return { error: supabaseConfigError };
+
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -115,17 +139,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const signInWithGoogle = async () => {
+    if (!supabase) return { error: supabaseConfigError };
+
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/`,
+        redirectTo: getAuthRedirectUrl(),
       },
     });
     return { error: error ? error.message : null };
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    await supabase?.auth.signOut();
     setBookmarks([]);
   };
 
@@ -146,6 +172,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       redirectToAuth("signup");
       return;
     }
+    if (!supabase) return;
+
     const existing = bookmarks.find(
       (b) => b.item_id === item.id && b.item_type === item.type,
     );

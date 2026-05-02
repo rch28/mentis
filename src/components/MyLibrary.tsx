@@ -11,8 +11,6 @@ const MyLibrary: React.FC = () => {
     useAuth();
   const [tab, setTab] = useState<"all" | "model" | "case">("all");
 
-  if (!myLibraryOpen) return null;
-
   // Compute tab counts once to avoid repeated filtering
   const tabCounts = useMemo(
     () => ({
@@ -26,6 +24,8 @@ const MyLibrary: React.FC = () => {
   // Filter bookmarks based on selected tab
   const filtered =
     tab === "all" ? bookmarks : bookmarks.filter((b) => b.item_type === tab);
+
+  if (!myLibraryOpen) return null;
 
   return (
     <ModalShell

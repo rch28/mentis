@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { Loader2 } from "lucide-react";
 
 import AuthBrandPanel from "./AuthBrandPanel";
 import DemoCredentials from "./DemoCredentials";
@@ -21,16 +22,17 @@ export default function AuthScreen({
   const [googleError, setGoogleError] = useState("");
   const { signInWithGoogle } = useAuth();
 
-  useEffect(() => {
-    setActiveTab(initialMode);
-  }, [initialMode]);
-
   const handleGoogleSignIn = async () => {
     setGoogleLoading(true);
     setGoogleError("");
-    const result = await signInWithGoogle();
-    if (result.error) {
-      setGoogleError(result.error);
+    try {
+      const result = await signInWithGoogle();
+      if (result.error) {
+        setGoogleError(result.error);
+        setGoogleLoading(false);
+      }
+    } catch {
+      setGoogleError("Google sign-in could not be started. Try again.");
       setGoogleLoading(false);
     }
   };
@@ -121,8 +123,9 @@ export default function AuthScreen({
                 fill="#EA4335"
               />
             </svg>
+            {googleLoading && <Loader2 size={16} className="animate-spin" />}
             <span className="text-sm font-semibold">
-              {googleLoading ? "Connecting..." : "Continue with Google"}
+              {googleLoading ? "Redirecting to Google..." : "Continue with Google"}
             </span>
           </button>
 

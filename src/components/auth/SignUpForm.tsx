@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -29,7 +29,7 @@ export default function SignUpForm({ onSwitchToLogin }: SignUpFormProps) {
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     formState: { errors },
   } = useForm<SignUpFormValues>({
     defaultValues: {
@@ -40,7 +40,7 @@ export default function SignUpForm({ onSwitchToLogin }: SignUpFormProps) {
     },
   });
 
-  const passwordValue = watch("password");
+  const passwordValue = useWatch({ control, name: "password" }) || "";
 
   const getPasswordStrength = (
     pw: string,

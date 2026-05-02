@@ -76,7 +76,7 @@ export default function AuthBrandPanel() {
             className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20"
           >
             <p className="text-white/90 text-sm leading-relaxed mb-3 italic">
-              "{testimonial.quote}"
+              &quot;{testimonial.quote}&quot;
             </p>
             <div className="flex items-center gap-2">
               <div className="w-7 h-7 rounded-full bg-white/25 flex items-center justify-center">

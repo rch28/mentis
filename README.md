@@ -2,7 +2,37 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, run the development server:
+Create a root `.env` file with the Supabase browser credentials:
+
+```bash
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-or-publishable-key
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+```
+
+`NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` is also accepted for newer Supabase
+projects, but `NEXT_PUBLIC_SUPABASE_ANON_KEY` is the default name used in this
+project's setup instructions.
+
+For Google authentication, enable the Google provider in Supabase Auth and add
+these URLs to the provider/redirect configuration:
+
+```text
+http://localhost:3000/auth/callback
+https://your-production-domain.com/auth/callback
+```
+
+If Next.js starts on another local port, either add that callback URL too or set
+`NEXT_PUBLIC_SITE_URL` to the exact local origin you are using.
+
+Set the Supabase site URL consistently with the app URL:
+
+```text
+Local: http://localhost:3000
+Production: https://your-production-domain.com
+```
+
+Then run the development server:
 
 ```bash
 npm run dev
