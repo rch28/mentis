@@ -2,11 +2,12 @@ import AuthScreen from "@/components/auth/AuthScreen";
 import type { AuthMode } from "@/contexts/AuthContext";
 
 interface SignInPageProps {
-  searchParams?: { mode?: string };
+  searchParams: Promise<{ mode?: string | string[] }>;
 }
 
-export default function SignInPage({ searchParams }: SignInPageProps) {
-  const modeParam = searchParams?.mode;
+export default async function SignInPage({ searchParams }: SignInPageProps) {
+  const { mode } = await searchParams;
+  const modeParam = Array.isArray(mode) ? mode[0] : mode;
   const initialMode: AuthMode = modeParam === "signup" ? "signup" : "signin";
 
   return <AuthScreen initialMode={initialMode} />;
