@@ -38,7 +38,7 @@ import {
   stats,
 } from "./dashboard-data";
 
-const cardClass = "rounded-2xl border border-[#ddd8d0] bg-white shadow-sm";
+const cardClass = "rounded-2xl border border-border bg-card text-foreground shadow-sm";
 
 export default function DashboardHome() {
   return (
@@ -93,34 +93,34 @@ function Greeting() {
   return (
     <div className="flex items-start justify-between gap-4">
       <div>
-        <h1 className="mb-1 text-2xl font-semibold tracking-tight text-[#1c1917]">
+        <h1 className="mb-1 text-2xl font-semibold tracking-tight text-foreground">
           {greeting}, {name}
         </h1>
-        <p className="text-sm text-[#78716c]">{date}</p>
-        <p className="mt-0.5 text-sm text-[#78716c]">
+        <p className="text-sm text-muted-foreground">{date}</p>
+        <p className="mt-0.5 text-sm text-muted-foreground">
           You have{" "}
-          <span className="font-semibold text-[#1c1917]">
+          <span className="font-semibold text-foreground">
             {stats.totalHabits - stats.completedHabits} habits
           </span>{" "}
-          and <span className="font-semibold text-[#1c1917]">1 session</span>{" "}
+          and <span className="font-semibold text-foreground">1 session</span>{" "}
           left for today.
         </p>
       </div>
       <div className="flex shrink-0 items-center gap-2">
         <button
           type="button"
-          className="relative flex h-10 w-10 items-center justify-center rounded-2xl border border-[#ddd8d0] bg-white shadow-sm transition-colors hover:bg-[#ede8e3]"
+          className="relative flex h-10 w-10 items-center justify-center rounded-2xl border border-border bg-card shadow-sm transition-colors hover:bg-muted"
           aria-label="Notifications"
         >
-          <Bell size={17} className="text-[#78716c]" />
+          <Bell size={17} className="text-muted-foreground" />
           <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-[#c4956a]" />
         </button>
         <button
           type="button"
-          className="flex h-10 w-10 items-center justify-center rounded-2xl border border-[#ddd8d0] bg-white shadow-sm transition-colors hover:bg-[#ede8e3]"
+          className="flex h-10 w-10 items-center justify-center rounded-2xl border border-border bg-card shadow-sm transition-colors hover:bg-muted"
           aria-label="Settings"
         >
-          <Settings size={17} className="text-[#78716c]" />
+          <Settings size={17} className="text-muted-foreground" />
         </button>
       </div>
     </div>
@@ -146,8 +146,8 @@ function KpiGrid() {
       icon: Brain,
       trend: "3 this week",
       positive: true,
-      className: "bg-white border-[#ddd8d0]",
-      iconClass: "bg-[#e5f0e9] text-[#5c8a6f]",
+      className: "bg-card border-border",
+      iconClass: "bg-muted text-primary",
     },
     {
       label: "Habits Today",
@@ -157,7 +157,7 @@ function KpiGrid() {
       trend: `${stats.totalHabits - stats.completedHabits} still pending`,
       positive: false,
       className: "bg-[#fff5c7] border-[#f5d46f]",
-      iconClass: "bg-white/70 text-[#b45309]",
+      iconClass: "bg-card/70 text-[#b45309]",
     },
     {
       label: "Mindful Minutes",
@@ -166,7 +166,7 @@ function KpiGrid() {
       icon: Clock,
       trend: "Goal: 120 min",
       positive: true,
-      className: "bg-white border-[#ddd8d0]",
+      className: "bg-card border-border",
       iconClass: "bg-indigo-50 text-indigo-500",
     },
     {
@@ -176,8 +176,8 @@ function KpiGrid() {
       icon: TrendingUp,
       trend: "2 in progress",
       positive: true,
-      className: "bg-white border-[#ddd8d0]",
-      iconClass: "bg-[#e5f0e9] text-[#5c8a6f]",
+      className: "bg-card border-border",
+      iconClass: "bg-muted text-primary",
     },
   ];
 
@@ -223,18 +223,18 @@ function KpiGrid() {
               </div>
               {!card.positive && <AlertTriangle size={14} className="text-[#b45309]" />}
             </div>
-            <p className="mb-1 text-xs font-medium uppercase tracking-wide text-[#78716c]">
+            <p className="mb-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">
               {card.label}
             </p>
             <div className="mb-1.5 flex items-baseline gap-1">
-              <span className="text-2xl font-semibold tabular-nums text-[#1c1917]">
+              <span className="text-2xl font-semibold tabular-nums text-foreground">
                 {card.value}
               </span>
-              <span className="text-xs text-[#78716c]">{card.unit}</span>
+              <span className="text-xs text-muted-foreground">{card.unit}</span>
             </div>
             <div
               className={`flex items-center gap-1 text-xs font-medium ${
-                card.positive ? "text-[#4a7c5c]" : "text-[#b45309]"
+                card.positive ? "text-primary" : "text-destructive"
               }`}
             >
               {card.positive ? <TrendingUp size={11} /> : <TrendingDown size={11} />}
@@ -261,11 +261,11 @@ function MoodTrend() {
       <div className="mb-6 flex items-start justify-between gap-4">
         <div>
           <h2 className="text-base font-semibold">7-Day Mood Trend</h2>
-          <p className="text-xs text-[#78716c]">
+          <p className="text-xs text-muted-foreground">
             Based on daily journal check-ins
           </p>
         </div>
-        <div className="flex items-center gap-2 rounded-2xl bg-[#ebf4ef] px-3 py-1.5 text-xs font-semibold text-[#4a7c5c]">
+        <div className="flex items-center gap-2 rounded-2xl bg-primary/10 px-3 py-1.5 text-xs font-semibold text-primary">
           <TrendingUp size={13} />
           Avg {average}/10
         </div>
@@ -278,13 +278,23 @@ function MoodTrend() {
               <stop offset="95%" stopColor="#5c8a6f" stopOpacity={0} />
             </linearGradient>
           </defs>
-          <CartesianGrid strokeDasharray="3 3" stroke="#ddd8d0" vertical={false} />
-          <XAxis dataKey="day" tick={{ fontSize: 12, fill: "#78716c" }} axisLine={false} tickLine={false} />
-          <YAxis domain={[4, 10]} tick={{ fontSize: 11, fill: "#78716c" }} axisLine={false} tickLine={false} />
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+          <XAxis
+            dataKey="day"
+            tick={{ fontSize: 12, fill: "var(--muted-foreground)" }}
+            axisLine={false}
+            tickLine={false}
+          />
+          <YAxis
+            domain={[4, 10]}
+            tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
+            axisLine={false}
+            tickLine={false}
+          />
           <Tooltip
             contentStyle={{
               borderRadius: 16,
-              border: "1px solid #ddd8d0",
+              border: "1px solid var(--border)",
               boxShadow: "0 12px 30px rgba(0,0,0,0.08)",
             }}
           />
@@ -312,13 +322,13 @@ export function TodayHabits() {
       <div className="mb-5 flex items-center justify-between gap-4">
         <div>
           <h2 className="text-base font-semibold">Today&apos;s Habits</h2>
-          <p className="text-xs text-[#78716c]">
+          <p className="text-xs text-muted-foreground">
             {completedCount} of {habits.length} completed
           </p>
         </div>
         <button
           type="button"
-          className="flex items-center gap-1.5 rounded-2xl bg-[#e5f0e9] px-3 py-1.5 text-xs font-semibold text-[#5c8a6f] transition-colors hover:bg-[#d9eadf]"
+          className="flex items-center gap-1.5 rounded-2xl bg-primary/10 px-3 py-1.5 text-xs font-semibold text-primary transition-colors hover:bg-primary/15"
         >
           <Plus size={13} />
           Add habit
@@ -326,7 +336,7 @@ export function TodayHabits() {
       </div>
 
       <div className="mb-5">
-        <div className="h-2 overflow-hidden rounded-full bg-[#e8e3dc]">
+        <div className="h-2 overflow-hidden rounded-full bg-muted">
           <div
             className="h-full rounded-full bg-[#5c8a6f] transition-all duration-500"
             style={{ width: `${progress}%` }}
@@ -336,7 +346,7 @@ export function TodayHabits() {
             aria-valuemax={100}
           />
         </div>
-        <p className="mt-1.5 text-xs text-[#78716c]">{progress}% complete</p>
+        <p className="mt-1.5 text-xs text-muted-foreground">{progress}% complete</p>
       </div>
 
       <div className="space-y-2">
@@ -357,30 +367,32 @@ export function TodayHabits() {
               }
               className={`flex w-full items-center gap-3 rounded-2xl border p-3 text-left transition-colors ${
                 habit.completed
-                  ? "border-[#bfe5cf] bg-[#f2faf5]"
-                  : "border-[#ddd8d0] bg-[#f7f5f2] hover:border-[#bfe5cf]"
+                  ? "border-primary/30 bg-primary/10"
+                  : "border-border bg-muted/40 hover:border-primary/30"
               }`}
               aria-pressed={habit.completed}
             >
               {habit.completed ? (
-                <CheckCircle2 size={20} className="shrink-0 text-[#5c8a6f]" />
+                <CheckCircle2 size={20} className="shrink-0 text-primary" />
               ) : (
-                <Circle size={20} className="shrink-0 text-[#78716c]" />
+                <Circle size={20} className="shrink-0 text-muted-foreground" />
               )}
               <Icon size={18} className="shrink-0 text-[#c4956a]" />
               <span className="min-w-0 flex-1">
                 <span
                   className={`block truncate text-sm font-medium ${
-                    habit.completed ? "text-[#78716c] line-through" : "text-[#1c1917]"
+                    habit.completed
+                      ? "text-muted-foreground line-through"
+                      : "text-foreground"
                   }`}
                 >
                   {habit.name}
                 </span>
-                <span className="block text-xs text-[#78716c]">
+                <span className="block text-xs text-muted-foreground">
                   {habit.duration} · {habit.category}
                 </span>
               </span>
-              <span className="flex items-center gap-1 text-xs font-semibold text-[#78716c]">
+              <span className="flex items-center gap-1 text-xs font-semibold text-muted-foreground">
                 <Flame size={12} className="text-[#c4956a]" />
                 {habit.streak}
               </span>
@@ -398,17 +410,17 @@ function InsightCard() {
   const Icon = current.icon;
 
   return (
-    <section className="rounded-2xl border border-[#bfe5cf] bg-[#eff8f3] p-5 shadow-sm">
+    <section className="rounded-2xl border border-primary/20 bg-primary/10 p-5 shadow-sm">
       <div className="mb-3 flex items-start justify-between gap-3">
         <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-2xl bg-[#d9eadf] text-[#5c8a6f]">
+          <div className="flex h-8 w-8 items-center justify-center rounded-2xl bg-primary/15 text-primary">
             <Icon size={15} />
           </div>
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-[#5c8a6f]">
+            <p className="text-xs font-semibold uppercase tracking-wide text-primary">
               AI Insight
             </p>
-            <p className="text-xs text-[#78716c]">Personal pattern detection</p>
+            <p className="text-xs text-muted-foreground">Personal pattern detection</p>
           </div>
         </div>
         <button
@@ -417,19 +429,19 @@ function InsightCard() {
             setRefreshing(true);
             window.setTimeout(() => setRefreshing(false), 700);
           }}
-          className="rounded-xl p-1.5 text-[#78716c] transition-colors hover:bg-[#d9eadf] hover:text-[#5c8a6f]"
+          className="rounded-xl p-1.5 text-muted-foreground transition-colors hover:bg-primary/15 hover:text-primary"
           aria-label="Refresh insight"
         >
           <RefreshCw size={14} className={refreshing ? "animate-spin" : ""} />
         </button>
       </div>
       <h3 className="mb-2 text-sm font-semibold">{current.title}</h3>
-      <p className="mb-3 text-sm leading-relaxed text-[#55504a]">{current.text}</p>
+      <p className="mb-3 text-sm leading-relaxed text-muted-foreground">{current.text}</p>
       <div className="flex flex-wrap gap-1.5">
         {current.tags.map((tag) => (
           <span
             key={tag}
-            className="rounded-full bg-white/80 px-2 py-0.5 text-xs font-medium text-[#5c8a6f]"
+            className="rounded-full bg-card/80 px-2 py-0.5 text-xs font-medium text-primary"
           >
             {tag}
           </span>
@@ -445,23 +457,23 @@ function RecommendedSession() {
   const Icon = session.icon;
 
   return (
-    <section className="rounded-2xl border border-blue-100 bg-blue-50 p-5 shadow-sm">
-      <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-[#78716c]">
+    <section className="rounded-2xl border border-border bg-card p-5 shadow-sm">
+      <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
         Recommended for You
       </p>
       <div className="mb-4 flex items-start gap-3">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-blue-100 text-blue-600">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
           <Icon size={18} />
         </div>
         <div className="min-w-0 flex-1">
           <h3 className="truncate text-sm font-semibold">{session.title}</h3>
-          <p className="text-xs text-[#78716c]">{session.category}</p>
+          <p className="text-xs text-muted-foreground">{session.category}</p>
         </div>
       </div>
-      <p className="mb-4 text-xs leading-relaxed text-[#78716c]">
+      <p className="mb-4 text-xs leading-relaxed text-muted-foreground">
         {session.description}
       </p>
-      <div className="mb-4 flex flex-wrap items-center gap-3 text-xs text-[#78716c]">
+      <div className="mb-4 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
         <span className="flex items-center gap-1">
           <Clock size={12} />
           {session.duration}
@@ -478,7 +490,7 @@ function RecommendedSession() {
           setStarting(true);
           window.setTimeout(() => setStarting(false), 700);
         }}
-        className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#5c8a6f] py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#4f795f]"
+        className="flex w-full items-center justify-center gap-2 rounded-2xl bg-primary py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
       >
         <Play size={14} />
         {starting ? "Starting..." : "Begin Session"}
@@ -494,7 +506,7 @@ function RecentAchievements() {
     <section className={`${cardClass} p-5`}>
       <div className="mb-4 flex items-center justify-between gap-3">
         <h2 className="text-sm font-semibold">Achievements</h2>
-        <span className="text-xs text-[#78716c]">
+        <span className="text-xs text-muted-foreground">
           {earned}/{achievements.length} earned
         </span>
       </div>
@@ -506,17 +518,17 @@ function RecentAchievements() {
               key={badge.id}
               className={`rounded-2xl border p-3 text-center ${
                 badge.earned
-                  ? "border-[#bfe5cf] bg-[#f5fbf7]"
-                  : "border-[#ddd8d0] bg-[#f7f5f2] opacity-50"
+                  ? "border-primary/30 bg-primary/10"
+                  : "border-border bg-muted/40 opacity-50"
               }`}
             >
               <Icon className="mx-auto mb-2 text-[#c4956a]" size={22} />
               <p className="text-xs font-semibold leading-tight">{badge.name}</p>
-              <p className="mt-0.5 text-xs leading-tight text-[#78716c]">
+              <p className="mt-0.5 text-xs leading-tight text-muted-foreground">
                 {badge.description}
               </p>
               {badge.earnedDate && (
-                <p className="mt-1 text-xs font-medium text-[#5c8a6f]">
+                <p className="mt-1 text-xs font-medium text-primary">
                   {badge.earnedDate}
                 </p>
               )}

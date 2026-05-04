@@ -57,8 +57,8 @@ export default function DashboardShell({
 
   if (loading || !user) {
     return (
-      <main className="min-h-screen bg-[#f7f5f2] text-[#1c1917] flex items-center justify-center px-6">
-        <div className="rounded-2xl border border-[#ddd8d0] bg-white px-6 py-5 text-sm text-[#78716c] shadow-sm">
+      <main className="min-h-screen bg-background text-foreground flex items-center justify-center px-6">
+        <div className="rounded-2xl border border-border bg-card px-6 py-5 text-sm text-muted-foreground shadow-sm">
           Loading your workspace...
         </div>
       </main>
@@ -78,20 +78,20 @@ export default function DashboardShell({
     .toUpperCase();
 
   return (
-    <div className="min-h-screen bg-[#f7f5f2] text-[#1c1917] lg:flex">
+    <div className="min-h-screen bg-background text-foreground lg:flex">
       <aside
-        className={`hidden lg:flex min-h-screen flex-col border-r border-[#ddd8d0] bg-white transition-all duration-200 ${
+        className={`hidden lg:flex min-h-screen flex-col border-r border-border bg-card transition-all duration-200 ${
           collapsed ? "w-16" : "w-60"
         }`}
         aria-label="Dashboard navigation"
       >
         <Link
           href="/dashboard"
-          className={`flex h-[52px] items-center border-b border-[#ddd8d0] ${
+          className={`flex h-[52px] items-center border-b border-border ${
             collapsed ? "justify-center px-3" : "gap-3 px-5"
           }`}
         >
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#5c8a6f] text-white">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
             <Brain size={17} />
           </div>
           {!collapsed && <span className="text-base font-bold tracking-tight">Mentis</span>}
@@ -101,7 +101,7 @@ export default function DashboardShell({
           {navGroups.map((group) => (
             <div key={group.label} className="mb-6">
               {!collapsed && (
-                <p className="mb-2 px-5 text-xs font-semibold uppercase tracking-wide text-[#78716c]">
+                <p className="mb-2 px-5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                   {group.label}
                 </p>
               )}
@@ -119,8 +119,8 @@ export default function DashboardShell({
                         collapsed ? "justify-center p-2.5" : "gap-3 px-3 py-2.5"
                       } ${
                         active
-                          ? "bg-[#e7e0d8] text-[#1c1917]"
-                          : "text-[#78716c] hover:bg-[#ede8e3] hover:text-[#1c1917]"
+                          ? "bg-muted text-foreground"
+                          : "text-muted-foreground hover:bg-muted hover:text-foreground"
                       }`}
                       aria-current={active ? "page" : undefined}
                       title={collapsed ? item.label : undefined}
@@ -130,7 +130,7 @@ export default function DashboardShell({
                         <>
                           <span className="flex-1 text-sm font-medium">{item.label}</span>
                           {item.badge && (
-                            <span className="rounded-full bg-[#ede8e3] px-1.5 py-0.5 text-xs font-semibold text-[#78716c]">
+                            <span className="rounded-full bg-muted px-1.5 py-0.5 text-xs font-semibold text-muted-foreground">
                               {item.badge}
                             </span>
                           )}
@@ -144,10 +144,10 @@ export default function DashboardShell({
           ))}
         </nav>
 
-        <div className="border-t border-[#ddd8d0] p-2">
+        <div className="border-t border-border p-2">
           <Link
             href="/settings"
-            className={`flex items-center rounded-2xl text-[#78716c] transition-colors hover:bg-[#ede8e3] hover:text-[#1c1917] ${
+            className={`flex items-center rounded-2xl text-muted-foreground transition-colors hover:bg-muted hover:text-foreground ${
               collapsed ? "justify-center p-2.5" : "gap-3 px-3 py-2.5"
             }`}
           >
@@ -156,13 +156,13 @@ export default function DashboardShell({
           </Link>
 
           <div className={`flex items-center rounded-2xl p-2 ${collapsed ? "justify-center" : "gap-3 px-3"}`}>
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#e5f0e9] text-xs font-bold text-[#5c8a6f]">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-bold text-primary">
               {initials}
             </div>
             {!collapsed && (
               <div className="min-w-0 flex-1">
                 <p className="truncate text-xs font-semibold">{userName}</p>
-                <p className="truncate text-xs text-[#78716c]">23-day streak</p>
+                <p className="truncate text-xs text-muted-foreground">23-day streak</p>
               </div>
             )}
           </div>
@@ -173,7 +173,7 @@ export default function DashboardShell({
               await signOut();
               router.replace("/");
             }}
-            className={`flex w-full items-center rounded-2xl text-[#78716c] transition-colors hover:bg-[#fee2e2] hover:text-[#b91c1c] ${
+            className={`flex w-full items-center rounded-2xl text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive ${
               collapsed ? "justify-center p-2.5" : "gap-3 px-3 py-2.5"
             }`}
           >
@@ -185,7 +185,7 @@ export default function DashboardShell({
         <button
           type="button"
           onClick={() => setCollapsed((value) => !value)}
-          className="flex h-10 items-center justify-center border-t border-[#ddd8d0] text-[#78716c] transition-colors hover:bg-[#ede8e3] hover:text-[#1c1917]"
+          className="flex h-10 items-center justify-center border-t border-border text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
           {collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
@@ -194,7 +194,7 @@ export default function DashboardShell({
 
       <main className="min-w-0 flex-1 pb-24 lg:pb-0">{children}</main>
 
-      <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t border-[#ddd8d0] bg-white px-2 py-2 lg:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t border-border bg-card px-2 py-2 lg:hidden">
         {[
           { href: "/dashboard", icon: LayoutDashboard, label: "Home" },
           { href: "/habits", icon: Flame, label: "Habits" },
@@ -209,7 +209,7 @@ export default function DashboardShell({
               key={item.href}
               href={item.href}
               className={`flex flex-col items-center gap-1 rounded-xl px-2 py-1.5 text-xs font-medium ${
-                active ? "text-[#5c8a6f]" : "text-[#78716c]"
+                active ? "text-primary" : "text-muted-foreground"
               }`}
             >
               <Icon size={20} />

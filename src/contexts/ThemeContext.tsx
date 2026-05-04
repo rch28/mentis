@@ -11,15 +11,19 @@ const ThemeContext = createContext<ThemeCtx | undefined>(undefined);
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [isDark, setIsDark] = useState(true); // Default to dark
+  const [isDark, setIsDark] = useState(true);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    // Check localStorage on mount
     const stored = localStorage.getItem("theme-dark");
     if (stored !== null) {
       setIsDark(stored === "true");
+      setMounted(true);
+      return;
     }
+
+    const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)").matches;
+    setIsDark(prefersDark);
     setMounted(true);
   }, []);
 
@@ -27,11 +31,8 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
     if (!mounted) return;
     localStorage.setItem("theme-dark", String(isDark));
     const html = document.documentElement;
-    if (isDark) {
-      html.classList.remove("light");
-    } else {
-      html.classList.add("light");
-    }
+    html.classList.toggle("dark", isDark);
+    html.style.colorScheme = isDark ? "dark" : "light";
   }, [isDark, mounted]);
 
   const toggleDarkMode = () => {
